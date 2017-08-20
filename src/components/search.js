@@ -10,10 +10,30 @@ class Search extends Component {
   }
 
   searchBook(e){
+
+    let savedBooks = []
+    let searchBooks = []
+
     if (e.target.value !== ""){
-      BooksAPI.search(e.target.value).then((books) => this.setState({
-        result: books
-      }))
+      window.stop()
+      BooksAPI.search(e.target.value).then((books) =>
+        books.length > 0 ? (
+        books.map((book) =>
+          this.props.books.find((b) => b.id === book.id) ?
+            savedBooks.push(this.props.books.find((b) => b.id === book.id)) : searchBooks.push(book)
+        ) && (
+          this.setState({
+            result: savedBooks.concat(searchBooks)
+          })
+        )):0
+      ).catch(function() {
+        console.log("unsuccessful fetch");
+      })
+    }else{
+      window.stop()
+      this.setState({
+        result: []
+      })
     }
   }
 
